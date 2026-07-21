@@ -1,31 +1,84 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# CryptoX
 
-* [/iosApp](./iosApp/iosApp) contains an iOS application. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+A **Kotlin Multiplatform** (Android-first) crypto portfolio & market tracker,
+built entirely with **Compose Multiplatform** — zero XML — following **Clean
+Architecture** and the **MVI** pattern.
 
-* [/shared](./shared/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./shared/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./shared/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./shared/src/jvmMain/kotlin)
-    folder is the appropriate location.
+Targets: **Android** and **iOS** (shared Compose UI).
 
-### Running the apps
+## Features
 
-Use the run configurations provided by the run widget in your IDE's toolbar. You can also use these commands and options:
+- **Market** — live coin list with debounced search (300 ms), pull-to-refresh,
+  and full loading / error / empty states.
+- **Coin Detail** — header with price & 24h change, an **interactive line chart
+  drawn with Compose `Canvas`** (touch-scrub price readout), range chips
+  (1D / 1W / 1M / 1Y), a stats grid, and a description.
+- **Design system** — a themed `CryptoX*` component library (dark-first) with
+  design tokens and light/dark previews.
 
-- Android app: `./gradlew :androidApp:assembleDebug`
-- iOS app: open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+> Data is currently served by a `FakeCoinRepository` (realistic coins, simulated
+> latency, injectable failures). The real network/database layer plugs in behind
+> the `CoinRepository` interface with no feature-code changes.
 
-### Running tests
+## Module map
 
-Use the run button in your IDE's editor gutter, or run tests using Gradle tasks:
+```
+androidApp                     Android app + demo NavHost host
+shared                         KMP shared code + iOS entry point
+core:designsystem              CryptoX* components, theme, tokens
+core:mvi                       BaseViewModel (MVI foundation)
+core:domain                    models + CoinRepository interface
+core:data                      FakeCoinRepository + Koin dataModule
+feature:market                 market list (MVI)
+feature:detail                 coin detail + interactive chart (MVI)
+```
 
-- Android tests: `./gradlew :shared:testAndroidHostTest`
-- iOS tests: `./gradlew :shared:iosSimulatorArm64Test`
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the dependency graph and
+data flow.
+
+## Tech stack
+
+Compose Multiplatform · Material 3 · Kotlin Coroutines/Flow · Koin (DI) ·
+Navigation-Compose (type-safe routes) · a custom MVI `BaseViewModel` ·
+`kotlinx.collections.immutable` · Turbine + coroutines-test.
+
+## Quick start
+
+```bash
+# Android
+./gradlew :androidApp:assembleDebug     # build
+./gradlew :androidApp:installDebug      # install on device/emulator
+
+# Tests
+./gradlew :feature:market:testDebugUnitTest :feature:detail:testDebugUnitTest
+```
+
+iOS: open [`/iosApp`](./iosApp) in Xcode and run.
+
+The Android app launches a demo host: Market list → tap a coin → Coin Detail → back.
+
+## Documentation
+
+Full docs live in [`/docs`](docs/README.md):
+
+| Doc | Contents |
+|-----|----------|
+| [Architecture](docs/ARCHITECTURE.md) | Layers, module graph, data flow, tech stack. |
+| [Modules](docs/MODULES.md) | Every module explained. |
+| [MVI](docs/MVI.md) | The `BaseViewModel` contract, with a worked example. |
+| [Design System](docs/DESIGN_SYSTEM.md) | Tokens, theme, `CryptoX*` components. |
+| [Getting Started](docs/GETTING_STARTED.md) | Build, test, and add a feature. |
+
+Per-area implementation briefs are in [`/plans`](plans).
+
+## Conventions
+
+- **Zero XML** — Compose only.
+- **MVI everywhere** — UI reads `state`, sends `intent`s; navigation/messages are `effect`s.
+- **Tokens only** — no hardcoded colors/spacing in features.
+- Every screen handles **loading / error / empty** states.
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)
+and [Compose Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-multiplatform.html).

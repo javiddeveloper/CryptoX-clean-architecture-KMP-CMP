@@ -34,3 +34,8 @@ dependencyResolutionManagement {
 include(":androidApp")
 include(":shared")
 include(":core:designsystem")
+include(":core:mvi")
+include(":core:domain")
+include(":core:data")
+include(":feature:market")
+include(":feature:detail")
