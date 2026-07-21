@@ -1,10 +1,14 @@
+﻿/*
+ * Copyright (c) 2026 Javid Sattar
+ * Email: javiddeveloper@gmail.com
+ */
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidMultiplatformLibrary)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -18,31 +22,16 @@ kotlin {
         }
     }
     
-    android {
-       namespace = "com.javid.sattar.crypto_x.shared"
-       compileSdk = libs.versions.android.compileSdk.get().toInt()
-       minSdk = libs.versions.android.minSdk.get().toInt()
-    
-       compilerOptions {
-           jvmTarget = JvmTarget.JVM_11
-       }
-       androidResources {
-           enable = true
-       }
-       withHostTest {
-           isIncludeAndroidResources = true
-       }
-       withDeviceTestBuilder {
-           sourceSetTreeName = "test"
-       }.configure {
-           instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-       }
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
+        }
     }
     
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.compose.uiToolingPreview)
-            implementation(libs.compose.uiTooling)
+            implementation(compose.components.uiToolingPreview)
+            implementation(libs.compose.ui.tooling)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -50,9 +39,9 @@ kotlin {
             implementation(libs.compose.material3)
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
-            implementation(libs.compose.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(compose.components.uiToolingPreview)
+            implementation(libs.jetbrains.lifecycle.viewmodel.compose)
+            implementation(libs.jetbrains.lifecycle.runtime.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -60,6 +49,14 @@ kotlin {
     }
 }
 
+android {
+    namespace = "com.javid.sattar.crypto_x.shared"
+    compileSdk = 35
+    defaultConfig {
+        minSdk = 24
+    }
+}
+
 dependencies {
-    androidRuntimeClasspath(libs.compose.uiTooling)
+    // androidRuntimeClasspath(libs.compose.uiTooling)
 }

@@ -1,3 +1,7 @@
+﻿/*
+ * Copyright (c) 2026 Javid Sattar
+ * Email: javiddeveloper@gmail.com
+ */
 rootProject.name = "CryptoX"
 
 pluginManagement {
@@ -29,3 +33,4 @@ dependencyResolutionManagement {
 
 include(":androidApp")
 include(":shared")
+include(":core:designsystem")
