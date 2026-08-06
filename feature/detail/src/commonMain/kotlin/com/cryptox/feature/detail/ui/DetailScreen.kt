@@ -50,16 +50,29 @@ import com.cryptox.core.domain.model.CoinDetail
 import com.cryptox.feature.detail.ui.contract.DetailEffect
 import com.cryptox.feature.detail.ui.contract.DetailIntent
 import com.cryptox.feature.detail.ui.contract.DetailUiState
+import cryptox.feature.detail.generated.resources.Res
+import cryptox.feature.detail.generated.resources.detail_about
+import cryptox.feature.detail.generated.resources.detail_no_chart_data
+import cryptox.feature.detail.generated.resources.detail_range_day
+import cryptox.feature.detail.generated.resources.detail_range_month
+import cryptox.feature.detail.generated.resources.detail_range_week
+import cryptox.feature.detail.generated.resources.detail_range_year
+import cryptox.feature.detail.generated.resources.detail_stat_high_24h
+import cryptox.feature.detail.generated.resources.detail_stat_low_24h
+import cryptox.feature.detail.generated.resources.detail_stat_market_cap
+import cryptox.feature.detail.generated.resources.detail_stat_volume_24h
+import cryptox.feature.detail.generated.resources.detail_title_fallback
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 private const val CURRENCY_SYMBOL = "$"
 
 /** Range chips shown above the chart, mapped to domain [ChartRange]. */
-private val RANGE_LABELS = listOf(
-    ChartRange.DAY to "۱ روز",
-    ChartRange.WEEK to "۱ هفته",
-    ChartRange.MONTH to "۱ ماه",
-    ChartRange.YEAR to "۱ سال",
+private val RANGE_LABEL_RES = listOf(
+    ChartRange.DAY to Res.string.detail_range_day,
+    ChartRange.WEEK to Res.string.detail_range_week,
+    ChartRange.MONTH to Res.string.detail_range_month,
+    ChartRange.YEAR to Res.string.detail_range_year,
 )
 
 @Composable
@@ -102,7 +115,7 @@ fun DetailScreen(
     CryptoXScaffold(
         topBar = {
             CryptoXTopBar(
-                title = state.detail?.coin?.name ?: "جزئیات ارز",
+                title = state.detail?.coin?.name ?: stringResource(Res.string.detail_title_fallback),
                 onBack = { onIntent(DetailIntent.BackClicked) },
             )
         },
@@ -186,9 +199,9 @@ private fun DetailContent(
 
         // ── Range selector chips ───────────────────────────────────────────
         Row(horizontalArrangement = Arrangement.spacedBy(CryptoXSpacing.sm)) {
-            RANGE_LABELS.forEach { (range, label) ->
+            RANGE_LABEL_RES.forEach { (range, labelRes) ->
                 RangeChip(
-                    label = label,
+                    label = stringResource(labelRes),
                     selected = state.selectedRange == range,
                     onClick = { onIntent(DetailIntent.RangeChanged(range)) },
                     modifier = Modifier.weight(1f),
@@ -210,19 +223,19 @@ private fun DetailContent(
         // ── Stats grid ─────────────────────────────────────────────────────
         Column(verticalArrangement = Arrangement.spacedBy(CryptoXSpacing.sm)) {
             Row(horizontalArrangement = Arrangement.spacedBy(CryptoXSpacing.sm)) {
-                StatCard("ارزش بازار", formatCompact(detail.marketCap), Modifier.weight(1f))
-                StatCard("حجم ۲۴ ساعته", formatCompact(detail.volume24h), Modifier.weight(1f))
+                StatCard(stringResource(Res.string.detail_stat_market_cap), formatCompact(detail.marketCap), Modifier.weight(1f))
+                StatCard(stringResource(Res.string.detail_stat_volume_24h), formatCompact(detail.volume24h), Modifier.weight(1f))
             }
             Row(horizontalArrangement = Arrangement.spacedBy(CryptoXSpacing.sm)) {
-                StatCard("بیشترین ۲۴س", formatPrice(detail.high24h), Modifier.weight(1f))
-                StatCard("کمترین ۲۴س", formatPrice(detail.low24h), Modifier.weight(1f))
+                StatCard(stringResource(Res.string.detail_stat_high_24h), formatPrice(detail.high24h), Modifier.weight(1f))
+                StatCard(stringResource(Res.string.detail_stat_low_24h), formatPrice(detail.low24h), Modifier.weight(1f))
             }
         }
 
         // ── Description ─────────────────────────────────────────────────────
         Column(verticalArrangement = Arrangement.spacedBy(CryptoXSpacing.sm)) {
             Text(
-                text = "درباره ${detail.coin.name}",
+                text = stringResource(Res.string.detail_about, detail.coin.name),
                 style = MaterialTheme.typography.titleMedium,
                 color = colors.textPrimary,
             )

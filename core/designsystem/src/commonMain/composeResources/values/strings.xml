@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cx_search_content_description">Search</string>
+    <string name="cx_clear_content_description">Clear</string>
+    <string name="cx_retry">Retry</string>
+</resources>

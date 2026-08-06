@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="market_title">Market</string>
+    <string name="market_search_placeholder">Search coins…</string>
+    <string name="market_coin_count">%1$d coins</string>
+    <string name="market_empty_search_title">No results found</string>
+    <string name="market_empty_search_subtitle">No coins found for \"%1$s\".</string>
+    <string name="market_empty_list_title">List is empty</string>
+    <string name="market_empty_list_subtitle">There are no coins to show right now.</string>
+    <string name="market_refresh_failed">Failed to refresh</string>
+</resources>
