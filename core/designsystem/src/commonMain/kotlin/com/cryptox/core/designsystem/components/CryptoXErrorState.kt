@@ -22,7 +22,8 @@ import com.cryptox.core.designsystem.theme.LocalCryptoXColors
 fun CryptoXErrorState(
     message: String,
     onRetry: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    retryLabel: String = "Retry"
 ) {
     val colors = LocalCryptoXColors.current
 
@@ -39,7 +40,7 @@ fun CryptoXErrorState(
             )
             Spacer(modifier = Modifier.height(CryptoXSpacing.lg))
             CryptoXPrimaryButton(
-                text = "Retry",
+                text = retryLabel,
                 onClick = onRetry
             )
         }
