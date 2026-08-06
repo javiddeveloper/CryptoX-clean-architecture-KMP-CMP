@@ -31,6 +31,10 @@ import com.cryptox.core.designsystem.theme.CornerRadius
 import com.cryptox.core.designsystem.theme.CryptoXSpacing
 import com.cryptox.core.designsystem.theme.IconSize
 import com.cryptox.core.designsystem.theme.LocalCryptoXColors
+import cryptox.core.designsystem.generated.resources.Res
+import cryptox.core.designsystem.generated.resources.cx_clear_content_description
+import cryptox.core.designsystem.generated.resources.cx_search_content_description
+import org.jetbrains.compose.resources.stringResource
 
 // Material Icons
 import androidx.compose.material.icons.Icons
@@ -62,7 +66,7 @@ fun CryptoXSearchField(
     ) {
         Icon(
             imageVector = Icons.Default.Search,
-            contentDescription = "Search",
+            contentDescription = stringResource(Res.string.cx_search_content_description),
             tint = if (isFocused) colors.accent else colors.textMuted,
             modifier = Modifier.size(IconSize.medium)
         )
@@ -96,7 +100,7 @@ fun CryptoXSearchField(
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Clear",
+                    contentDescription = stringResource(Res.string.cx_clear_content_description),
                     tint = colors.textMuted,
                     modifier = Modifier.size(IconSize.small)
                 )

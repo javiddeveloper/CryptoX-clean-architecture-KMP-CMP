@@ -33,6 +33,9 @@ import com.cryptox.core.designsystem.components.CryptoXLoadingShimmer
 import com.cryptox.core.designsystem.theme.CryptoXSpacing
 import com.cryptox.core.designsystem.theme.LocalCryptoXColors
 import androidx.compose.foundation.Canvas
+import cryptox.feature.detail.generated.resources.Res
+import cryptox.feature.detail.generated.resources.detail_no_chart_data
+import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
 
 /**
@@ -63,7 +66,7 @@ fun PriceChart(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = "نموداری برای نمایش وجود ندارد",
+                    text = stringResource(Res.string.detail_no_chart_data),
                     style = MaterialTheme.typography.bodyMedium,
                     color = colors.textMuted,
                 )

@@ -43,6 +43,15 @@ import com.cryptox.core.designsystem.theme.LocalCryptoXColors
 import com.cryptox.feature.market.ui.contract.MarketEffect
 import com.cryptox.feature.market.ui.contract.MarketIntent
 import com.cryptox.feature.market.ui.contract.MarketUiState
+import cryptox.feature.market.generated.resources.Res
+import cryptox.feature.market.generated.resources.market_coin_count
+import cryptox.feature.market.generated.resources.market_empty_list_subtitle
+import cryptox.feature.market.generated.resources.market_empty_list_title
+import cryptox.feature.market.generated.resources.market_empty_search_subtitle
+import cryptox.feature.market.generated.resources.market_empty_search_title
+import cryptox.feature.market.generated.resources.market_search_placeholder
+import cryptox.feature.market.generated.resources.market_title
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 private const val CURRENCY_SYMBOL = "$"
@@ -89,14 +98,14 @@ fun MarketScreen(
     modifier: Modifier = Modifier,
 ) {
     CryptoXScaffold(
-        topBar = { CryptoXTopBar(title = "بازار ارزها") },
+        topBar = { CryptoXTopBar(title = stringResource(Res.string.market_title)) },
     ) { innerPadding ->
         Box(modifier = modifier.fillMaxSize().padding(innerPadding)) {
             Column(modifier = Modifier.fillMaxSize()) {
                 CryptoXSearchField(
                     query = state.query,
                     onQueryChange = { onIntent(MarketIntent.QueryChanged(it)) },
-                    placeholder = "جستجوی ارز...",
+                    placeholder = stringResource(Res.string.market_search_placeholder),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
@@ -112,18 +121,17 @@ fun MarketScreen(
                         message = state.error,
                         onRetry = { onIntent(MarketIntent.Load) },
                         modifier = Modifier.fillMaxSize(),
-                        retryLabel = "تلاش مجدد",
                     )
 
                     state.coins.isEmpty() && state.query.isNotBlank() -> CryptoXEmptyState(
-                        title = "نتیجه‌ای یافت نشد",
-                        subtitle = "برای «${state.query}» ارزی پیدا نشد.",
+                        title = stringResource(Res.string.market_empty_search_title),
+                        subtitle = stringResource(Res.string.market_empty_search_subtitle, state.query),
                         modifier = Modifier.fillMaxSize(),
                     )
 
                     state.isEmpty -> CryptoXEmptyState(
-                        title = "لیست خالی است",
-                        subtitle = "در حال حاضر ارزی برای نمایش وجود ندارد.",
+                        title = stringResource(Res.string.market_empty_list_title),
+                        subtitle = stringResource(Res.string.market_empty_list_subtitle),
                         modifier = Modifier.fillMaxSize(),
                     )
 
@@ -162,7 +170,7 @@ private fun CoinList(
     ) {
         item {
             Text(
-                text = "${state.coins.size} ارز",
+                text = stringResource(Res.string.market_coin_count, state.coins.size),
                 style = MaterialTheme.typography.labelLarge,
                 color = LocalCryptoXColors.current.textMuted,
                 modifier = Modifier.padding(

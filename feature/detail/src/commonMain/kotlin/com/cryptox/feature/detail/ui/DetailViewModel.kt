@@ -16,6 +16,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
+import cryptox.feature.detail.generated.resources.Res
+import cryptox.feature.detail.generated.resources.detail_chart_load_failed
+import org.jetbrains.compose.resources.getString
 
 class DetailViewModel(
     private val repository: CoinRepository,
@@ -67,7 +70,7 @@ class DetailViewModel(
         repository.getChart(id, range).fold(
             onSuccess = { points -> emit(PartialState.ChartLoaded(points)) },
             onFailure = { error ->
-                sendEvent(DetailEffect.ShowError(error.message ?: "خطا در دریافت نمودار"))
+                sendEvent(DetailEffect.ShowError(error.message ?: getString(Res.string.detail_chart_load_failed)))
             },
         )
         emit(PartialState.ChartLoading(false))

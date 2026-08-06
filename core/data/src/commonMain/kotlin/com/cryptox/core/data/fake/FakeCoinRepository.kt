@@ -38,7 +38,7 @@ class FakeCoinRepository(
     override suspend fun refreshMarket(): Result<Unit> {
         delay(networkDelayMs)
         if (consumeFailure()) {
-            return Result.failure(IllegalStateException("اتصال به سرور برقرار نشد"))
+            return Result.failure(IllegalStateException("Could not connect to the server"))
         }
         // Nudge prices a little so a refresh visibly changes the list.
         market.value = market.value.map { coin ->
@@ -54,10 +54,10 @@ class FakeCoinRepository(
     override suspend fun getCoinDetail(id: String): Result<CoinDetail> {
         delay(networkDelayMs)
         if (consumeFailure()) {
-            return Result.failure(IllegalStateException("خطا در دریافت اطلاعات ارز"))
+            return Result.failure(IllegalStateException("Failed to load coin details"))
         }
         val coin = market.value.firstOrNull { it.id == id }
-            ?: return Result.failure(NoSuchElementException("ارز یافت نشد"))
+            ?: return Result.failure(NoSuchElementException("Coin not found"))
         return Result.success(
             CoinDetail(
                 coin = coin,
@@ -66,7 +66,7 @@ class FakeCoinRepository(
                 high24h = coin.price * 1.06,
                 low24h = coin.price * 0.94,
                 description = descriptions[coin.id]
-                    ?: "${coin.name} یک ارز دیجیتال است که در بازارهای جهانی معامله می‌شود.",
+                    ?: "${coin.name} is a digital asset traded on global markets.",
             ),
         )
     }
@@ -74,10 +74,10 @@ class FakeCoinRepository(
     override suspend fun getChart(id: String, range: ChartRange): Result<List<PricePoint>> {
         delay(networkDelayMs / 2)
         if (consumeFailure()) {
-            return Result.failure(IllegalStateException("خطا در دریافت نمودار"))
+            return Result.failure(IllegalStateException("Failed to load chart data"))
         }
         val coin = market.value.firstOrNull { it.id == id }
-            ?: return Result.failure(NoSuchElementException("ارز یافت نشد"))
+            ?: return Result.failure(NoSuchElementException("Coin not found"))
         return Result.success(generateChart(coin.price, range))
     }
 
@@ -180,9 +180,9 @@ class FakeCoinRepository(
         )
 
         val descriptions = mapOf(
-            "bitcoin" to "بیت‌کوین اولین و بزرگ‌ترین ارز دیجیتال غیرمتمرکز جهان است که در سال ۲۰۰۹ معرفی شد.",
-            "ethereum" to "اتریوم یک پلتفرم قراردادهای هوشمند است که زیرساخت بسیاری از برنامه‌های غیرمتمرکز را فراهم می‌کند.",
-            "solana" to "سولانا یک بلاک‌چین پرسرعت با کارمزد پایین برای اپلیکیشن‌های غیرمتمرکز و مالی است.",
+            "bitcoin" to "Bitcoin is the world's first and largest decentralized digital currency, introduced in 2009.",
+            "ethereum" to "Ethereum is a smart-contract platform that powers a large share of decentralized applications.",
+            "solana" to "Solana is a high-speed, low-fee blockchain for decentralized and financial applications.",
         )
     }
 

@@ -20,6 +20,9 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import cryptox.feature.market.generated.resources.Res
+import cryptox.feature.market.generated.resources.market_refresh_failed
+import org.jetbrains.compose.resources.getString
 
 class MarketViewModel(
     private val repository: CoinRepository,
@@ -64,7 +67,7 @@ class MarketViewModel(
     private fun handleRefresh(): Flow<PartialState> = flow {
         emit(PartialState.Refreshing(true))
         repository.refreshMarket().onFailure { error ->
-            sendEvent(MarketEffect.ShowError(error.message ?: "خطا در بروزرسانی"))
+            sendEvent(MarketEffect.ShowError(error.message ?: getString(Res.string.market_refresh_failed)))
         }
         emit(PartialState.Refreshing(false))
     }
