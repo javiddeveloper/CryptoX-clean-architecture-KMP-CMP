@@ -10,12 +10,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +27,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cryptox.core.designsystem.components.CryptoXCoinListItem
 import com.cryptox.core.designsystem.components.CryptoXEmptyState
@@ -31,7 +37,9 @@ import com.cryptox.core.designsystem.components.CryptoXLoadingShimmer
 import com.cryptox.core.designsystem.components.CryptoXScaffold
 import com.cryptox.core.designsystem.components.CryptoXSearchField
 import com.cryptox.core.designsystem.components.CryptoXTopBar
+import com.cryptox.core.designsystem.theme.CornerRadius
 import com.cryptox.core.designsystem.theme.CryptoXSpacing
+import com.cryptox.core.designsystem.theme.LocalCryptoXColors
 import com.cryptox.feature.market.ui.contract.MarketEffect
 import com.cryptox.feature.market.ui.contract.MarketIntent
 import com.cryptox.feature.market.ui.contract.MarketUiState
@@ -104,6 +112,7 @@ fun MarketScreen(
                         message = state.error,
                         onRetry = { onIntent(MarketIntent.Load) },
                         modifier = Modifier.fillMaxSize(),
+                        retryLabel = "تلاش مجدد",
                     )
 
                     state.coins.isEmpty() && state.query.isNotBlank() -> CryptoXEmptyState(
@@ -136,6 +145,8 @@ fun MarketScreen(
     }
 }
 
+private val CoinRowHeight = 84.dp
+
 @Composable
 private fun CoinList(
     state: MarketUiState,
@@ -149,6 +160,17 @@ private fun CoinList(
         ),
         verticalArrangement = Arrangement.spacedBy(CryptoXSpacing.sm),
     ) {
+        item {
+            Text(
+                text = "${state.coins.size} ارز",
+                style = MaterialTheme.typography.labelLarge,
+                color = LocalCryptoXColors.current.textMuted,
+                modifier = Modifier.padding(
+                    horizontal = CryptoXSpacing.xs,
+                    vertical = CryptoXSpacing.xs,
+                ),
+            )
+        }
         items(items = state.coins, key = { it.id }) { coin ->
             CryptoXCoinListItem(
                 iconUrl = coin.iconUrl,
@@ -176,7 +198,12 @@ private fun LoadingList() {
         verticalArrangement = Arrangement.spacedBy(CryptoXSpacing.sm),
     ) {
         repeat(8) {
-            CryptoXLoadingShimmer(modifier = Modifier.fillMaxWidth())
+            CryptoXLoadingShimmer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(CoinRowHeight)
+                    .clip(RoundedCornerShape(CornerRadius.card)),
+            )
         }
     }
 }

@@ -11,8 +11,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import cryptox.designsystem.generated.resources.Res
-import cryptox.designsystem.generated.resources.quicksand_variable
+import cryptox.core.designsystem.generated.resources.Res
+import cryptox.core.designsystem.generated.resources.quicksand_variable
 import org.jetbrains.compose.resources.Font
 
 /**
