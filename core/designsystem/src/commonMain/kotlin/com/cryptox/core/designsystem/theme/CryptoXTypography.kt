@@ -8,12 +8,29 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import cryptox.designsystem.generated.resources.Res
+import cryptox.designsystem.generated.resources.quicksand_variable
+import org.jetbrains.compose.resources.Font
+
+/**
+ * Quicksand, a soft/rounded Google Font, loaded from its variable-weight file
+ * with [FontVariation] settings per weight.
+ */
+@Composable
+private fun quicksandFontFamily(): FontFamily = FontFamily(
+    Font(Res.font.quicksand_variable, weight = FontWeight.Light, variationSettings = FontVariation.Settings(FontVariation.weight(300))),
+    Font(Res.font.quicksand_variable, weight = FontWeight.Normal, variationSettings = FontVariation.Settings(FontVariation.weight(400))),
+    Font(Res.font.quicksand_variable, weight = FontWeight.Medium, variationSettings = FontVariation.Settings(FontVariation.weight(500))),
+    Font(Res.font.quicksand_variable, weight = FontWeight.SemiBold, variationSettings = FontVariation.Settings(FontVariation.weight(600))),
+    Font(Res.font.quicksand_variable, weight = FontWeight.Bold, variationSettings = FontVariation.Settings(FontVariation.weight(700))),
+)
 
 @Composable
 fun cryptoXTypography(): Typography {
-    val fontFamily = FontFamily.Default
+    val fontFamily = quicksandFontFamily()
     val defaultTypography = Typography()
 
     return Typography(
