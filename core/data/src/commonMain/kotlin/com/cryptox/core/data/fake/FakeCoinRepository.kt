@@ -4,6 +4,7 @@
  */
 package com.cryptox.core.data.fake
 
+import com.cryptox.core.domain.model.Candle
 import com.cryptox.core.domain.model.ChartRange
 import com.cryptox.core.domain.model.Coin
 import com.cryptox.core.domain.model.CoinDetail
@@ -81,6 +82,16 @@ class FakeCoinRepository(
         return Result.success(generateChart(coin.price, range))
     }
 
+    override suspend fun getCandles(id: String, range: ChartRange): Result<List<Candle>> {
+        delay(networkDelayMs / 2)
+        if (consumeFailure()) {
+            return Result.failure(IllegalStateException("Failed to load chart data"))
+        }
+        val coin = market.value.firstOrNull { it.id == id }
+            ?: return Result.failure(NoSuchElementException("Coin not found"))
+        return Result.success(generateCandles(coin.price, range))
+    }
+
     override fun searchCoins(query: String): Flow<List<Coin>> {
         val q = query.trim()
         return market.map { coins ->
@@ -104,29 +115,53 @@ class FakeCoinRepository(
     }
 
     private fun generateChart(basePrice: Double, range: ChartRange): List<PricePoint> {
-        val points = when (range) {
-            ChartRange.DAY -> 24
-            ChartRange.WEEK -> 7 * 6
-            ChartRange.MONTH -> 30
-            ChartRange.YEAR -> 52
-        }
-        val stepMs = when (range) {
-            ChartRange.DAY -> 3_600_000L
-            ChartRange.WEEK -> 4 * 3_600_000L
-            ChartRange.MONTH -> 24 * 3_600_000L
-            ChartRange.YEAR -> 7 * 24 * 3_600_000L
-        }
+        val (count, stepMs) = range.geometry()
         val rng = Random(basePrice.toRawBits())
-        val now = 1_700_000_000_000L
-        return (0 until points).map { i ->
+        return (0 until count).map { i ->
             val wave = sin(i / 4.0) * basePrice * 0.05
             val noise = rng.nextDouble(-0.03, 0.03) * basePrice
             PricePoint(
-                timestamp = now - (points - i) * stepMs,
+                timestamp = CHART_EPOCH_MS - (count - i) * stepMs,
                 price = (basePrice + wave + noise).coerceAtLeast(0.0001),
             )
         }
     }
+
+    /**
+     * Builds OHLC bars as a continuous random walk: each candle opens exactly where
+     * the previous one closed, so the series reads like a real market instead of a
+     * set of independent samples. Wicks extend a small random amount past the body.
+     */
+    private fun generateCandles(basePrice: Double, range: ChartRange): List<Candle> {
+        val (count, stepMs) = range.geometry()
+        val rng = Random(basePrice.toRawBits() xor range.ordinal.toLong())
+        var open = basePrice * 0.97
+        return (0 until count).map { i ->
+            val drift = sin(i / 4.0) * basePrice * 0.012
+            val close = (open + drift + rng.nextDouble(-0.02, 0.02) * basePrice)
+                .coerceAtLeast(0.0001)
+            val wick = basePrice * rng.nextDouble(0.002, 0.014)
+            val candle = Candle(
+                timestamp = CHART_EPOCH_MS - (count - i) * stepMs,
+                open = open,
+                high = maxOf(open, close) + wick,
+                low = (minOf(open, close) - wick).coerceAtLeast(0.0001),
+                close = close,
+            )
+            open = close
+            candle
+        }
+    }
+
+    /** Sample count and interval width, shared by the line and candle series. */
+    private fun ChartRange.geometry(): RangeGeometry = when (this) {
+        ChartRange.DAY -> RangeGeometry(count = 24, stepMs = HOUR_MS)
+        ChartRange.WEEK -> RangeGeometry(count = 7 * 6, stepMs = 4 * HOUR_MS)
+        ChartRange.MONTH -> RangeGeometry(count = 30, stepMs = 24 * HOUR_MS)
+        ChartRange.YEAR -> RangeGeometry(count = 52, stepMs = 7 * 24 * HOUR_MS)
+    }
+
+    private data class RangeGeometry(val count: Int, val stepMs: Long)
 
     private fun seedCoins(): List<Coin> = rawSeed.map { (id, symbol, name, price, change) ->
         Coin(
@@ -152,6 +187,11 @@ class FakeCoinRepository(
     }
 
     private companion object {
+        const val HOUR_MS = 3_600_000L
+
+        /** Fixed "now" so generated series stay stable across runs and snapshots. */
+        const val CHART_EPOCH_MS = 1_700_000_000_000L
+
         // id, symbol, name, price, change24h%
         val rawSeed = listOf(
             Quint("bitcoin", "BTC", "Bitcoin", 67_842.15, 2.34),
