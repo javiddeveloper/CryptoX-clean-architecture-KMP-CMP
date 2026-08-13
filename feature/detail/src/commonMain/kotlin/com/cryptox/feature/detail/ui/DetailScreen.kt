@@ -405,16 +405,71 @@ private fun StatCard(
     }
 }
 
+/**
+ * Loading placeholder mirroring [DetailContent]'s layout — header, range chips, chart and
+ * stats grid — so the screen doesn't reflow when the real data lands.
+ */
 @Composable
 private fun DetailLoading() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(CryptoXSpacing.pageHorizontal),
-        verticalArrangement = Arrangement.spacedBy(CryptoXSpacing.md),
+            .padding(horizontal = CryptoXSpacing.pageHorizontal),
+        verticalArrangement = Arrangement.spacedBy(CryptoXSpacing.lg),
     ) {
-        repeat(6) {
-            CryptoXLoadingShimmer(modifier = Modifier.fillMaxWidth())
+        Spacer(Modifier.height(CryptoXSpacing.sm))
+
+        // Header: avatar + name/symbol, price + change badge.
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            CryptoXLoadingShimmer(modifier = Modifier.size(48.dp), shape = CircleShape)
+            Spacer(Modifier.width(CryptoXSpacing.md))
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(CryptoXSpacing.xs),
+            ) {
+                CryptoXLoadingShimmer(modifier = Modifier.width(120.dp).height(18.dp))
+                CryptoXLoadingShimmer(modifier = Modifier.width(56.dp).height(12.dp))
+            }
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(CryptoXSpacing.xs),
+            ) {
+                CryptoXLoadingShimmer(modifier = Modifier.width(104.dp).height(18.dp))
+                CryptoXLoadingShimmer(
+                    modifier = Modifier.width(64.dp).height(20.dp),
+                    shape = RoundedCornerShape(CornerRadius.full),
+                )
+            }
+        }
+
+        // Range chips.
+        Row(horizontalArrangement = Arrangement.spacedBy(CryptoXSpacing.sm)) {
+            repeat(RANGE_LABEL_RES.size) {
+                CryptoXLoadingShimmer(
+                    modifier = Modifier.weight(1f).height(44.dp),
+                    shape = CryptoXShapes.small,
+                )
+            }
+        }
+
+        // Chart.
+        CryptoXLoadingShimmer(
+            modifier = Modifier.fillMaxWidth().height(240.dp),
+            shape = RoundedCornerShape(CornerRadius.card),
+        )
+
+        // Stats grid.
+        Column(verticalArrangement = Arrangement.spacedBy(CryptoXSpacing.sm)) {
+            repeat(2) {
+                Row(horizontalArrangement = Arrangement.spacedBy(CryptoXSpacing.sm)) {
+                    repeat(2) {
+                        CryptoXLoadingShimmer(
+                            modifier = Modifier.weight(1f).height(76.dp),
+                            shape = RoundedCornerShape(CornerRadius.card),
+                        )
+                    }
+                }
+            }
         }
     }
 }

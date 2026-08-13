@@ -31,9 +31,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cryptox.core.designsystem.components.CryptoXCoinListItem
+import com.cryptox.core.designsystem.components.CryptoXCoinListItemSkeleton
 import com.cryptox.core.designsystem.components.CryptoXEmptyState
 import com.cryptox.core.designsystem.components.CryptoXErrorState
-import com.cryptox.core.designsystem.components.CryptoXLoadingShimmer
 import com.cryptox.core.designsystem.components.CryptoXScaffold
 import com.cryptox.core.designsystem.components.CryptoXSearchField
 import com.cryptox.core.designsystem.components.CryptoXTopBar
@@ -153,7 +153,8 @@ fun MarketScreen(
     }
 }
 
-private val CoinRowHeight = 84.dp
+/** Enough placeholder rows to fill a phone screen without overshooting into wasted work. */
+private const val SKELETON_ROW_COUNT = 8
 
 @Composable
 private fun CoinList(
@@ -205,13 +206,8 @@ private fun LoadingList() {
             ),
         verticalArrangement = Arrangement.spacedBy(CryptoXSpacing.sm),
     ) {
-        repeat(8) {
-            CryptoXLoadingShimmer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(CoinRowHeight)
-                    .clip(RoundedCornerShape(CornerRadius.card)),
-            )
+        repeat(SKELETON_ROW_COUNT) {
+            CryptoXCoinListItemSkeleton()
         }
     }
 }
