@@ -22,9 +22,17 @@ Targets: **Android** and **iOS** (shared Compose UI).
 
 ## Screenshots
 
+### Android
+
 | Market | Coin Detail |
 |---|---|
 | ![Market screen](docs/screenshots/market.png) | ![Coin Detail screen](docs/screenshots/detail.png) |
+
+### iOS
+
+| Market | Coin Detail |
+|:---:|:---:|
+| ![iOS Market screen](docs/screenshots/ios-market.png) | ![iOS Coin Detail screen](docs/screenshots/ios-detail.png) |
 
 ## Module map
 

@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import com.cryptox.core.designsystem.theme.CornerRadius
 import com.cryptox.core.designsystem.theme.CryptoXSpacing
@@ -50,8 +51,7 @@ fun CryptoXCoinListItem(
         modifier = Modifier
             .fillMaxWidth()
             .shadow(elevation = Elevation.xs, shape = cardShape, clip = false)
-            .clip(cardShape)
-            .background(colors.surfaceElevated)
+            .cryptoXGlassSurface(cardShape)
             .clickable(onClick = onClick)
             .padding(horizontal = CryptoXSpacing.md, vertical = CryptoXSpacing.md),
         verticalAlignment = Alignment.CenterVertically
@@ -61,7 +61,14 @@ fun CryptoXCoinListItem(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(colors.accentBg)
+                .background(
+                    Brush.linearGradient(
+                        listOf(
+                            colors.accent.copy(alpha = 0.22f),
+                            colors.accentSecondary.copy(alpha = 0.22f),
+                        ),
+                    ),
+                )
                 .border(1.dp, colors.accent.copy(alpha = 0.35f), CircleShape),
             contentAlignment = Alignment.Center
         ) {

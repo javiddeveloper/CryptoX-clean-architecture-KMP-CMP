@@ -4,50 +4,37 @@
  */
 package com.javid.sattar.crypto_x
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import org.jetbrains.compose.resources.painterResource
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
+import com.cryptox.core.designsystem.theme.CryptoXTheme
+import com.cryptox.feature.detail.DetailDestination
+import com.cryptox.feature.detail.detailScreen
+import com.cryptox.feature.market.MarketDestination
+import com.cryptox.feature.market.marketScreen
 
-import cryptox.shared.generated.resources.Res
-import cryptox.shared.generated.resources.compose_multiplatform
-
+/**
+ * Cross-platform demo host wiring Market -> Detail with the fake data layer, so both
+ * feature screens can be exercised end to end on Android and iOS from the same
+ * composable. The production app shell (nav graph, bottom bar, Portfolio/Settings) is
+ * a separate, later effort.
+ */
 @Composable
-@Preview
 fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+    CryptoXTheme(darkTheme = true) {
+        val navController = rememberNavController()
+        NavHost(
+            navController = navController,
+            startDestination = MarketDestination,
         ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
-                }
-            }
+            marketScreen(
+                onNavigateToDetail = { coinId ->
+                    navController.navigate(DetailDestination(coinId))
+                },
+            )
+            detailScreen(
+                onBack = { navController.popBackStack() },
+            )
         }
     }
 }

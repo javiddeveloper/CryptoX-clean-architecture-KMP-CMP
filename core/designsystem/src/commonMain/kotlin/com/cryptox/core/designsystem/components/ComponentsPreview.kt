@@ -49,9 +49,11 @@ private fun ComponentsGallery() {
         CryptoXLoadingShimmer(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(84.dp)
-                .clip(RoundedCornerShape(CornerRadius.card))
+                .height(84.dp),
+            shape = RoundedCornerShape(CornerRadius.card)
         )
+
+        CryptoXCoinListItemSkeleton()
 
         CryptoXCoinListItem(
             iconUrl = "",

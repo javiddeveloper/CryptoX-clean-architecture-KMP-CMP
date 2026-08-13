@@ -16,18 +16,12 @@ kotlin {
     }
 }
 dependencies {
+    // Feature screens, design system, data, DI and navigation all come in transitively
+    // through :shared, which now hosts the cross-platform App() composable and Koin
+    // startup that both androidApp and iosApp call into.
     implementation(project(":shared"))
-    implementation(project(":core:designsystem"))
-    implementation(project(":core:data"))
-    implementation(project(":feature:market"))
-    implementation(project(":feature:detail"))
 
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.koin.core)
-    implementation(libs.koin.android)
-    implementation(libs.koin.compose)
-    implementation(libs.koin.compose.viewmodel)
 
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
