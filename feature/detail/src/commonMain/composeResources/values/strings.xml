@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="detail_title_fallback">Coin Detail</string>
+    <string name="detail_range_day">1D</string>
+    <string name="detail_range_week">1W</string>
+    <string name="detail_range_month">1M</string>
+    <string name="detail_range_year">1Y</string>
+    <string name="detail_stat_market_cap">Market Cap</string>
+    <string name="detail_stat_volume_24h">24h Volume</string>
+    <string name="detail_stat_high_24h">24h High</string>
+    <string name="detail_stat_low_24h">24h Low</string>
+    <string name="detail_about">About %1$s</string>
+    <string name="detail_no_chart_data">No chart data to display</string>
+    <string name="detail_chart_load_failed">Failed to load chart data</string>
+    <string name="detail_chart_style_line">Line</string>
+    <string name="detail_chart_style_candle">Candles</string>
+    <string name="detail_ohlc_open">O</string>
+    <string name="detail_ohlc_high">H</string>
+    <string name="detail_ohlc_low">L</string>
+    <string name="detail_ohlc_close">C</string>
+</resources>

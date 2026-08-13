@@ -46,7 +46,7 @@ abstract class BaseViewModel<STATE, PARTIAL_STATE, EVENT, INTENT>(
                 .flatMapMerge { intent ->
                     handleIntent(intent)
                         .catch { error ->
-                            emit(createErrorState(error.message ?: "خطای نامشخص"))
+                            emit(createErrorState(error.message ?: "Unknown error"))
                         }
                 }
                 .scan(uiState.value) { currentState, partialState ->

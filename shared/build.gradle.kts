@@ -34,6 +34,11 @@ kotlin {
             implementation(libs.compose.ui.tooling)
         }
         commonMain.dependencies {
+            implementation(project(":core:designsystem"))
+            implementation(project(":core:data"))
+            implementation(project(":feature:market"))
+            implementation(project(":feature:detail"))
+
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
@@ -42,6 +47,10 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.jetbrains.lifecycle.viewmodel.compose)
             implementation(libs.jetbrains.lifecycle.runtime.compose)
+            implementation(libs.androidx.navigation.compose)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -7,12 +7,17 @@ package com.cryptox.core.designsystem.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.cryptox.core.designsystem.theme.CornerRadius
 import com.cryptox.core.designsystem.theme.CryptoXTheme
 import com.cryptox.core.designsystem.theme.LocalCryptoXColors
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -35,7 +40,21 @@ private fun ComponentsGallery() {
         }
         
         CryptoXPrimaryButton(text = "Primary Button", onClick = {})
-        
+
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            CryptoXChangeBadge(changePercent = 2.53)
+            CryptoXChangeBadge(changePercent = -1.2)
+        }
+
+        CryptoXLoadingShimmer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(84.dp),
+            shape = RoundedCornerShape(CornerRadius.card)
+        )
+
+        CryptoXCoinListItemSkeleton()
+
         CryptoXCoinListItem(
             iconUrl = "",
             name = "Bitcoin",

@@ -20,6 +20,20 @@ Targets: **Android** and **iOS** (shared Compose UI).
 > latency, injectable failures). The real network/database layer plugs in behind
 > the `CoinRepository` interface with no feature-code changes.
 
+## Screenshots
+
+### Android
+
+| Market | Coin Detail |
+|---|---|
+| ![Market screen](docs/screenshots/market.png) | ![Coin Detail screen](docs/screenshots/detail.png) |
+
+### iOS
+
+| Market | Coin Detail |
+|:---:|:---:|
+| ![iOS Market screen](docs/screenshots/ios-market.png) | ![iOS Coin Detail screen](docs/screenshots/ios-detail.png) |
+
 ## Module map
 
 ```

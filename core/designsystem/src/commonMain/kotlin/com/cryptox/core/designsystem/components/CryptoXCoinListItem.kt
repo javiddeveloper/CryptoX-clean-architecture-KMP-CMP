@@ -5,6 +5,7 @@
 package com.cryptox.core.designsystem.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,14 +18,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
+import com.cryptox.core.designsystem.theme.CornerRadius
 import com.cryptox.core.designsystem.theme.CryptoXSpacing
+import com.cryptox.core.designsystem.theme.Elevation
 import com.cryptox.core.designsystem.theme.LocalCryptoXColors
 
 @Composable
@@ -39,12 +45,15 @@ fun CryptoXCoinListItem(
     onClick: () -> Unit
 ) {
     val colors = LocalCryptoXColors.current
+    val cardShape = RoundedCornerShape(CornerRadius.card)
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(elevation = Elevation.xs, shape = cardShape, clip = false)
+            .cryptoXGlassSurface(cardShape)
             .clickable(onClick = onClick)
-            .padding(horizontal = CryptoXSpacing.pageHorizontal, vertical = CryptoXSpacing.md),
+            .padding(horizontal = CryptoXSpacing.md, vertical = CryptoXSpacing.md),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Icon Placeholder - TODO: Replace with Coil AsyncImage when dependency is added
@@ -52,13 +61,21 @@ fun CryptoXCoinListItem(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(colors.surfaceElevated),
+                .background(
+                    Brush.linearGradient(
+                        listOf(
+                            colors.accent.copy(alpha = 0.22f),
+                            colors.accentSecondary.copy(alpha = 0.22f),
+                        ),
+                    ),
+                )
+                .border(1.dp, colors.accent.copy(alpha = 0.35f), CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = symbol.take(1).uppercase(),
                 style = MaterialTheme.typography.titleMedium,
-                color = colors.textPrimary
+                color = colors.accent
             )
         }
 
@@ -105,11 +122,3 @@ fun CryptoXCoinListItem(
         }
     }
 }
-
-// Extension to avoid importing androidx.compose.foundation.layout.height directly 
-// which could conflict if done wrong, though standard compose height is fine.
-@Composable
-private fun SpacerHeight(height: androidx.compose.ui.unit.Dp) {
-    Spacer(modifier = Modifier.height(height))
-}
-// wait, fixing spacer above.

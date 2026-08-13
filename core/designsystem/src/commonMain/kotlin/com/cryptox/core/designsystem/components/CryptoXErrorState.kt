@@ -17,12 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.cryptox.core.designsystem.theme.CryptoXSpacing
 import com.cryptox.core.designsystem.theme.LocalCryptoXColors
+import cryptox.core.designsystem.generated.resources.Res
+import cryptox.core.designsystem.generated.resources.cx_retry
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CryptoXErrorState(
     message: String,
     onRetry: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    retryLabel: String = stringResource(Res.string.cx_retry)
 ) {
     val colors = LocalCryptoXColors.current
 
@@ -39,7 +43,7 @@ fun CryptoXErrorState(
             )
             Spacer(modifier = Modifier.height(CryptoXSpacing.lg))
             CryptoXPrimaryButton(
-                text = "Retry",
+                text = retryLabel,
                 onClick = onRetry
             )
         }

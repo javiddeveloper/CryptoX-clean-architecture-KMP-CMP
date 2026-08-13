@@ -47,6 +47,17 @@ val CryptoNeutral500 = Color(0xFF64748B)
 val CryptoNeutral600 = Color(0xFF475569)
 val CryptoNeutralBg  = Color(0x1A94A3B8)
 
+// Secondary accent - violet. Pairs with the teal to give the ambient wash depth.
+val CryptoViolet400 = Color(0xFFA78BFA)
+val CryptoViolet500 = Color(0xFF8B5CF6)
+val CryptoViolet600 = Color(0xFF7C3AED)
+
+// Aurora - low-alpha light sources for the ambient background wash.
+val CryptoAuroraTeal      = Color(0x3806B6D4)
+val CryptoAuroraViolet    = Color(0x2E7C3AED)
+val CryptoAuroraTealSoft  = Color(0x1406B6D4)
+val CryptoAuroraVioletSoft = Color(0x107C3AED)
+
 // Text
 val CryptoDarkTextPrimary   = Color(0xFFEDF1F7)
 val CryptoDarkTextSecondary = Color(0xFF8B96AC)
@@ -92,6 +103,19 @@ data class CryptoXColors(
     val accent: Color,
     val accentBg: Color,
 
+    /** Violet counterpart to [accent], used for the ambient wash and dual-tone gradients. */
+    val accentSecondary: Color,
+
+    /** Light sources for the ambient aurora painted behind every screen. */
+    val auroraPrimary: Color,
+    val auroraSecondary: Color,
+
+    /** Translucent fill for "glass" surfaces layered over the aurora. */
+    val glassSurface: Color,
+
+    /** Hairline that catches the light along the top edge of a glass surface. */
+    val glassHighlight: Color,
+
     // Disabled
     val disabledAlpha: Float,
 
@@ -117,9 +141,15 @@ val DarkCryptoXColors = CryptoXColors(
     neutralBg       = CryptoNeutralBg,
     accent          = CryptoTeal400,
     accentBg        = CryptoTealBg,
+    accentSecondary = CryptoViolet400,
+    auroraPrimary   = CryptoAuroraTeal,
+    auroraSecondary = CryptoAuroraViolet,
+    glassSurface    = Color(0x99141B2E),   // CryptoNavy700 @ 60%
+    glassHighlight  = Color(0x1FFFFFFF),   // rgba(255,255,255,.12)
     disabledAlpha   = 0.38f,
-    heroGradient    = Brush.linearGradient(listOf(CryptoTeal500, CryptoTeal700)),
-    accentGradient  = Brush.linearGradient(listOf(CryptoTeal400, CryptoTeal600)),
+    // Teal sweeping into violet - the "cosmic" hero treatment.
+    heroGradient    = Brush.linearGradient(listOf(CryptoTeal500, CryptoTeal700, CryptoViolet600)),
+    accentGradient  = Brush.linearGradient(listOf(CryptoTeal400, CryptoViolet500)),
 )
 
 val LightCryptoXColors = CryptoXColors(
@@ -139,9 +169,14 @@ val LightCryptoXColors = CryptoXColors(
     neutralBg       = CryptoNeutralBg,
     accent          = CryptoTeal600,
     accentBg        = CryptoTealBg,
+    accentSecondary = CryptoViolet600,
+    auroraPrimary   = CryptoAuroraTealSoft,
+    auroraSecondary = CryptoAuroraVioletSoft,
+    glassSurface    = Color(0xE6FFFFFF),   // white @ 90%
+    glassHighlight  = Color(0x14000000),   // rgba(0,0,0,.08)
     disabledAlpha   = 0.38f,
-    heroGradient    = Brush.linearGradient(listOf(CryptoTeal500, CryptoTeal700)),
-    accentGradient  = Brush.linearGradient(listOf(CryptoTeal500, CryptoTeal700)),
+    heroGradient    = Brush.linearGradient(listOf(CryptoTeal500, CryptoTeal700, CryptoViolet600)),
+    accentGradient  = Brush.linearGradient(listOf(CryptoTeal500, CryptoViolet600)),
 )
 
 /** Access the current theme's extended crypto colors via CompositionLocal. */

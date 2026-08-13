@@ -7,27 +7,34 @@ package com.cryptox.feature.detail.ui
 import kotlin.math.abs
 import kotlin.math.roundToLong
 
-/** Formats a large number as a compact string, e.g. 1.23B / 45.6M / 12.3K. */
-internal fun formatCompact(value: Double): String {
+internal const val DEFAULT_CURRENCY_SYMBOL = "$"
+
+/** Formats a large number as a compact string, e.g. $1.23B / $45.6M / $12.3K. */
+internal fun formatCompact(
+    value: Double,
+    currencySymbol: String = DEFAULT_CURRENCY_SYMBOL,
+): String {
     val sign = if (value < 0) "-" else ""
     val abs = abs(value)
     return when {
-        abs >= 1_000_000_000 -> "$sign\$${twoDecimals(abs / 1_000_000_000)}B"
-        abs >= 1_000_000 -> "$sign\$${twoDecimals(abs / 1_000_000)}M"
-        abs >= 1_000 -> "$sign\$${twoDecimals(abs / 1_000)}K"
-        else -> "$sign\$${twoDecimals(abs)}"
+        abs >= 1_000_000_000 -> "$sign$currencySymbol${twoDecimals(abs / 1_000_000_000)}B"
+        abs >= 1_000_000 -> "$sign$currencySymbol${twoDecimals(abs / 1_000_000)}M"
+        abs >= 1_000 -> "$sign$currencySymbol${twoDecimals(abs / 1_000)}K"
+        else -> "$sign$currencySymbol${twoDecimals(abs)}"
     }
 }
 
 /** Formats a price with sensible precision for small vs large values. */
-internal fun formatPrice(value: Double): String {
+internal fun formatPrice(
+    value: Double,
+    currencySymbol: String = DEFAULT_CURRENCY_SYMBOL,
+): String {
     val decimals = when {
-        value >= 1_000 -> 2
         value >= 1 -> 2
         value >= 0.01 -> 4
         else -> 8
     }
-    return "\$${roundTo(value, decimals)}"
+    return "$currencySymbol${roundTo(value, decimals)}"
 }
 
 private fun twoDecimals(value: Double): String = roundTo(value, 2)

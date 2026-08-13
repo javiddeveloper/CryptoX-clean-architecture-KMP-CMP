@@ -4,6 +4,7 @@
  */
 package com.cryptox.core.domain.repository
 
+import com.cryptox.core.domain.model.Candle
 import com.cryptox.core.domain.model.ChartRange
 import com.cryptox.core.domain.model.Coin
 import com.cryptox.core.domain.model.CoinDetail
@@ -19,5 +20,9 @@ interface CoinRepository {
     suspend fun refreshMarket(): Result<Unit>
     suspend fun getCoinDetail(id: String): Result<CoinDetail>
     suspend fun getChart(id: String, range: ChartRange): Result<List<PricePoint>>
+
+    /** OHLC bars for the same [range] as [getChart], for the candlestick view. */
+    suspend fun getCandles(id: String, range: ChartRange): Result<List<Candle>>
+
     fun searchCoins(query: String): Flow<List<Coin>>
 }
