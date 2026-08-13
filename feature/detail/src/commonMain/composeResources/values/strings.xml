@@ -12,4 +12,10 @@
     <string name="detail_about">About %1$s</string>
     <string name="detail_no_chart_data">No chart data to display</string>
     <string name="detail_chart_load_failed">Failed to load chart data</string>
+    <string name="detail_chart_style_line">Line</string>
+    <string name="detail_chart_style_candle">Candles</string>
+    <string name="detail_ohlc_open">O</string>
+    <string name="detail_ohlc_high">H</string>
+    <string name="detail_ohlc_low">L</string>
+    <string name="detail_ohlc_close">C</string>
 </resources>

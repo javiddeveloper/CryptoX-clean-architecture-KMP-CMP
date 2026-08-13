@@ -31,5 +31,20 @@ data class PricePoint(
     val price: Double,
 )
 
+/**
+ * One OHLC bar of the candlestick chart, covering the interval that starts at
+ * [timestamp]. [open] and [close] bound the body; [high] and [low] the wicks.
+ */
+data class Candle(
+    val timestamp: Long,
+    val open: Double,
+    val high: Double,
+    val low: Double,
+    val close: Double,
+) {
+    /** True when the interval closed at or above its open — drawn in the profit color. */
+    val isBullish: Boolean get() = close >= open
+}
+
 /** Selectable ranges for the detail chart. */
 enum class ChartRange { DAY, WEEK, MONTH, YEAR }

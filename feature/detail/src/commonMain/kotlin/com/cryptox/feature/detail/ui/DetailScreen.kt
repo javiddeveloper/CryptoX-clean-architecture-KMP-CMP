@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
@@ -31,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -42,16 +44,20 @@ import com.cryptox.core.designsystem.components.CryptoXLoadingShimmer
 import com.cryptox.core.designsystem.components.CryptoXPriceText
 import com.cryptox.core.designsystem.components.CryptoXScaffold
 import com.cryptox.core.designsystem.components.CryptoXTopBar
+import com.cryptox.core.designsystem.theme.CornerRadius
 import com.cryptox.core.designsystem.theme.CryptoXShapes
 import com.cryptox.core.designsystem.theme.CryptoXSpacing
 import com.cryptox.core.designsystem.theme.LocalCryptoXColors
 import com.cryptox.core.domain.model.ChartRange
 import com.cryptox.core.domain.model.CoinDetail
+import com.cryptox.feature.detail.ui.contract.ChartStyle
 import com.cryptox.feature.detail.ui.contract.DetailEffect
 import com.cryptox.feature.detail.ui.contract.DetailIntent
 import com.cryptox.feature.detail.ui.contract.DetailUiState
 import cryptox.feature.detail.generated.resources.Res
 import cryptox.feature.detail.generated.resources.detail_about
+import cryptox.feature.detail.generated.resources.detail_chart_style_candle
+import cryptox.feature.detail.generated.resources.detail_chart_style_line
 import cryptox.feature.detail.generated.resources.detail_no_chart_data
 import cryptox.feature.detail.generated.resources.detail_range_day
 import cryptox.feature.detail.generated.resources.detail_range_month
@@ -209,15 +215,18 @@ private fun DetailContent(
             }
         }
 
-        // ── Interactive line chart ─────────────────────────────────────────
-        PriceChart(
-            points = state.chart.map { it.price },
+        // ── Chart: style toggle + the series itself ─────────────────────────
+        ChartStyleToggle(
+            selected = state.chartStyle,
+            onSelect = { onIntent(DetailIntent.ChartStyleChanged(it)) },
+            modifier = Modifier.align(Alignment.End),
+        )
+        ChartSurface(
+            state = state,
             isPositive = detail.coin.changePercent24h >= 0,
-            isLoading = state.isChartLoading && state.chart.isEmpty(),
-            currencySymbol = CURRENCY_SYMBOL,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(220.dp),
+                .height(240.dp),
         )
 
         // ── Stats grid ─────────────────────────────────────────────────────
@@ -247,6 +256,104 @@ private fun DetailContent(
         }
 
         Spacer(Modifier.height(CryptoXSpacing.xl))
+    }
+}
+
+/**
+ * Hosts whichever series the current [DetailUiState.chartStyle] selects, and owns the
+ * loading / empty states so the chart composables stay pure renderers.
+ */
+@Composable
+private fun ChartSurface(
+    state: DetailUiState,
+    isPositive: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    val colors = LocalCryptoXColors.current
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(CornerRadius.card))
+            .background(colors.surface.copy(alpha = 0.45f))
+            .padding(vertical = CryptoXSpacing.sm, horizontal = CryptoXSpacing.xs),
+        contentAlignment = Alignment.Center,
+    ) {
+        when {
+            state.isChartLoading && state.isCurrentSeriesEmpty ->
+                CryptoXLoadingShimmer(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(CornerRadius.md)),
+                )
+
+            state.isCurrentSeriesEmpty -> Text(
+                text = stringResource(Res.string.detail_no_chart_data),
+                style = MaterialTheme.typography.bodyMedium,
+                color = colors.textMuted,
+            )
+
+            state.chartStyle == ChartStyle.LINE -> PriceChart(
+                points = state.chart.map { it.price },
+                isPositive = isPositive,
+                currencySymbol = CURRENCY_SYMBOL,
+                modifier = Modifier.fillMaxSize(),
+            )
+
+            else -> CandlestickChart(
+                candles = state.candles,
+                currencySymbol = CURRENCY_SYMBOL,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+    }
+}
+
+/** Compact two-state pill switching the chart between a line and OHLC candles. */
+@Composable
+private fun ChartStyleToggle(
+    selected: ChartStyle,
+    onSelect: (ChartStyle) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val colors = LocalCryptoXColors.current
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(CornerRadius.full))
+            .background(colors.surface)
+            .padding(CryptoXSpacing.xxs),
+        horizontalArrangement = Arrangement.spacedBy(CryptoXSpacing.xxs),
+    ) {
+        ChartStyleOption(
+            label = stringResource(Res.string.detail_chart_style_line),
+            selected = selected == ChartStyle.LINE,
+            onClick = { onSelect(ChartStyle.LINE) },
+        )
+        ChartStyleOption(
+            label = stringResource(Res.string.detail_chart_style_candle),
+            selected = selected == ChartStyle.CANDLE,
+            onClick = { onSelect(ChartStyle.CANDLE) },
+        )
+    }
+}
+
+@Composable
+private fun ChartStyleOption(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    val colors = LocalCryptoXColors.current
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(CornerRadius.full))
+            .background(if (selected) colors.accent else Color.Transparent)
+            .clickable(onClick = onClick)
+            .padding(horizontal = CryptoXSpacing.md, vertical = CryptoXSpacing.xs),
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelLarge,
+            color = if (selected) colors.background else colors.textSecondary,
+        )
     }
 }
 
